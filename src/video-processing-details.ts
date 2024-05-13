@@ -30,8 +30,9 @@ export default class VideoProcessingDetails {
     try {
       this.videos = JSON.parse(fs.readFileSync(this.filepath).toString())
     } catch (error) {
-      console.error('Error loading video processing details:', error)
-      this.videos = {}
+      throw new Error(
+        `Error loading video processing details ${JSON.stringify(error)}`,
+      )
     }
   }
 
