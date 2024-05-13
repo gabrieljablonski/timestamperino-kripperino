@@ -1,7 +1,7 @@
 import qs from 'querystring'
 
 interface ApiResponse<T> {
-  kind: 'youtube#playlistItemListResponse'
+  kind: string
   etag: string
   nextPageToken?: string
   prevPageToken?: string
