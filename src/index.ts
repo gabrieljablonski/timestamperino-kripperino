@@ -1,4 +1,4 @@
-import 'info-timestamp'
+import 'log-timestamp'
 import path from 'path'
 
 import config from './config'
