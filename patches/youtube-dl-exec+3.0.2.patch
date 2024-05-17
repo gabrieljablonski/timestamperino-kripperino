@@ -1,8 +1,16 @@
 diff --git a/node_modules/youtube-dl-exec/src/index.d.ts b/node_modules/youtube-dl-exec/src/index.d.ts
-index 5cb9f7d..e245f55 100644
+index 5cb9f7d..6bc31d8 100644
 --- a/node_modules/youtube-dl-exec/src/index.d.ts
 +++ b/node_modules/youtube-dl-exec/src/index.d.ts
-@@ -389,6 +389,7 @@ export type Flags = {
+@@ -73,6 +73,7 @@ export type Payload = {
+   _type: string;
+   _version: Version;
+   channel_is_verified?: boolean;
++  filename: string;
+ }
+ 
+ export type Version = {
+@@ -389,6 +390,7 @@ export type Flags = {
    xattrSetFilesize?: boolean
    yesPlaylist?: boolean
    youtubeSkipDashManifest?: boolean
