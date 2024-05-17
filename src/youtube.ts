@@ -191,7 +191,6 @@ export default class YouTube {
     { from = 0, to = -1, format = '247' }: DownloadVideoOptions,
   ) {
     return ytdlp(`https://www.youtube.com/watch?v=${videoId}`, {
-      dumpJson: true,
       format,
       downloadSections: `*${from}-${to ? to : 'inf'}`,
       output: '%(id)s.%(ext)s',
