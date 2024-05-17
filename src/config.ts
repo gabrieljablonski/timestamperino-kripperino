@@ -1,3 +1,6 @@
+// NOTE: Kripp's timezone. Setting it on `.env` is unreliable.
+process.env.TZ = 'America/Toronto'
+
 export default {
   env: process.env.NODE_ENV ?? 'development',
   videoProcessing: {
