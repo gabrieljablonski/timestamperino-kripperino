@@ -8,6 +8,7 @@
     "@typescript-eslint/parser": "^7.8.0",
     "eslint": "^9.2.0",
     "globals": "^15.2.0",
+    "patch-package": "^8.0.0",
     "prettier": "^3.2.5",
     "typescript-eslint": "^7.8.0"
   },
@@ -19,6 +20,8 @@
   },
   "type": "module",
   "dependencies": {
-    "log-timestamp": "^0.3.0"
+    "log-timestamp": "^0.3.0",
+    "node-tesseract-ocr": "^2.2.1",
+    "youtube-dl-exec": "^3.0.2"
   }
 }

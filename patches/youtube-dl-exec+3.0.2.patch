@@ -1,0 +1,12 @@
+diff --git a/node_modules/youtube-dl-exec/src/index.d.ts b/node_modules/youtube-dl-exec/src/index.d.ts
+index 5cb9f7d..e245f55 100644
+--- a/node_modules/youtube-dl-exec/src/index.d.ts
++++ b/node_modules/youtube-dl-exec/src/index.d.ts
+@@ -389,6 +389,7 @@ export type Flags = {
+   xattrSetFilesize?: boolean
+   yesPlaylist?: boolean
+   youtubeSkipDashManifest?: boolean
++  downloadSections?: string
+ }
+ 
+ export type Exec = (url: string, flags?: Flags, options?: SpawnOptions) => ChildProcess
