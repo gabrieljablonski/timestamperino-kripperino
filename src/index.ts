@@ -72,7 +72,7 @@ async function run(tries = 0) {
       console.info('Downloading YT video')
 
       const videosPath = 'videos/'
-      await youtube.downloadVideo('1VgPVeM1JcA', {
+      await youtube.downloadVideo(videoId, {
         from: 30,
         to: 180,
         format: '247',
