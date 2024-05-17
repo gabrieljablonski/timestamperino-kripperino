@@ -1,5 +1,6 @@
 import qs from 'querystring'
 import ytdlp from 'youtube-dl-exec'
+import path from 'path'
 
 interface ApiResponse<T> {
   kind: string
@@ -73,6 +74,7 @@ interface DownloadVideoOptions {
   from?: number
   to?: number
   format?: string
+  outputPath?: string
 }
 
 interface YouTubeOptions {
@@ -188,12 +190,17 @@ export default class YouTube {
 
   async downloadVideo(
     videoId: string,
-    { from = 0, to = -1, format = '247' }: DownloadVideoOptions,
+    {
+      from = 0,
+      to = -1,
+      format = '247',
+      outputPath = 'videos/',
+    }: DownloadVideoOptions,
   ) {
     return ytdlp(`https://www.youtube.com/watch?v=${videoId}`, {
       format,
       downloadSections: `*${from}-${to ? to : 'inf'}`,
-      output: '%(id)s.%(ext)s',
+      output: path.join(outputPath, '%(id)s.%(ext)s'),
     })
   }
 }

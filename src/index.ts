@@ -71,18 +71,19 @@ async function run(tries = 0) {
     try {
       console.info('Downloading YT video')
 
+      const videosPath = 'videos/'
       await youtube.downloadVideo('1VgPVeM1JcA', {
         from: 30,
         to: 180,
         format: '247',
+        outputPath: videosPath,
       })
-
-      const filename = `${videoId}.webm`
 
       console.info('Extracting images from YT video')
 
+      const filepath = path.join(videosPath, `${videoId}.webm`)
       const imagesPath = 'images/'
-      await ocr.videoToImages(filename, {
+      await ocr.videoToImages(filepath, {
         outputPath: imagesPath,
         crop: { x: 63, y: 697, w: 56, h: 16 },
       })
