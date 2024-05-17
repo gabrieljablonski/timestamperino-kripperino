@@ -26,5 +26,8 @@
     "log-timestamp": "^0.3.0",
     "node-tesseract-ocr": "^2.2.1",
     "youtube-dl-exec": "^3.0.2"
+  },
+  "engines" : { 
+    "node" : ">=22.0.0"
   }
 }
