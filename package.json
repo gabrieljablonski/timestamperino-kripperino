@@ -4,6 +4,7 @@
   "devDependencies": {
     "@eslint/js": "^9.2.0",
     "@types/bun": "^1.1.1",
+    "@types/fluent-ffmpeg": "^2.1.24",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
     "eslint": "^9.2.0",
@@ -16,10 +17,12 @@
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "dev": "bun --watch src/index.ts"
+    "dev": "bun --watch src/index.ts",
+    "postinstall": "patch-package"
   },
   "type": "module",
   "dependencies": {
+    "fluent-ffmpeg": "^2.1.2",
     "log-timestamp": "^0.3.0",
     "node-tesseract-ocr": "^2.2.1",
     "youtube-dl-exec": "^3.0.2"

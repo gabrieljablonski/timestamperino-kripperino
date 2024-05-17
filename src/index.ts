@@ -1,9 +1,12 @@
-import 'log-timestamp'
+import 'info-timestamp'
+import path from 'path'
 
 import config from './config'
 import VideoProcessingDetails from './video-processing-details'
 import YouTube from './youtube'
 import TwitchTv from './twitch-tv'
+import OCR from './ocr'
+import { listFilesInDirectory } from './files'
 
 const videoProcessingDetails = new VideoProcessingDetails({
   filepath: config.videoProcessing.filepath,
@@ -18,6 +21,7 @@ const twitch = new TwitchTv({
   clientId: config.twitchTv.clientId,
   clientSecret: config.twitchTv.clientSecret,
 })
+const ocr = new OCR()
 
 const playlistId = config.youtube.uploadsPlaylistId
 
@@ -41,7 +45,8 @@ async function run(tries = 0) {
     console.info(
       `Last upload already processed (${videoId}). Retrying in a bit...`,
     )
-    // Retries up to 5 times every 30s in case the video hasn't been posted yet.
+
+    // NOTE: Retries up to 5 times every 30s in case the video hasn't been posted yet.
     setTimeout(() => run(tries + 1), 30 * 1000)
     return
   }
@@ -55,21 +60,94 @@ async function run(tries = 0) {
       `No Twitch.tv VOD found in YT video description (${description})`,
     )
   } else {
-    let publishedAt = new Date(twitchVod.published_at)
-    let daysAgo = Math.round(
+    const publishedAt = new Date(twitchVod.published_at)
+    const daysAgo = Math.round(
       (Date.now() - publishedAt.getTime()) / (1000 * 60 * 60 * 24),
     )
-    let comment = `Kripp played this game live on stream about ${daysAgo} day${daysAgo === 1 ? '' : 's'} ago (on ${publishedAt.toLocaleDateString()}). Check out the video description to see the Twitch VOD!`
 
-    console.info(`Posting comment ('${comment}')`)
+    const commentLines = [
+      `Kripp played this game live on stream about ${daysAgo} day${daysAgo === 1 ? '' : 's'} ago (on ${publishedAt.toLocaleDateString()}).`,
+    ]
+    try {
+      console.info('Downloading YT video')
+      const { filename } = await youtube.downloadVideo('1VgPVeM1JcA', {
+        from: 30,
+        to: 180,
+        format: '247',
+      })
 
-    await youtube.addComment(
-      config.youtube.commenter.channelId,
-      videoId,
-      comment,
-    )
+      console.info('Extracting images from YT video')
 
-    console.info('Comment posted')
+      const imagesPath = 'images/'
+      await ocr.videoToImages(filename, {
+        outputPath: imagesPath,
+        crop: { x: 63, y: 697, w: 56, h: 16 },
+      })
+
+      const files = listFilesInDirectory(imagesPath)
+      files.sort()
+
+      console.info('Checking images for timestamp')
+
+      let time: [number, number] | null = null
+      for (const file of files) {
+        const text = await ocr.imageToText(path.join(imagesPath, file))
+        const match = text.trim().match(/(\d\d?):(\d\d) ([AP]M)/)
+        if (match) {
+          const offset = match[3] === 'PM' ? 12 : 0
+          time = [Number(match[1]) + offset, Number(match[2])]
+
+          console.info(`Found timestamp: ${text.trim()} in ${file}`)
+          break
+        }
+      }
+
+      if (!time) {
+        throw new Error('no timestamp found in images')
+      }
+
+      const detectedTime = new Date(publishedAt)
+      // NOTE: `process.env.TZ` needs to be set to Kripp's timezone (usually `America/Toronto`, unless he's on a trip) for the time to be set correctly.
+      detectedTime.setHours(time[0])
+      detectedTime.setMinutes(time[1])
+
+      let diff = (detectedTime.getTime() - publishedAt.getTime()) / 1000
+      if (diff < 0) {
+        // NOTE: Detected time is from the next day.
+        diff += 24 * 60 * 60
+      }
+
+      const diffHours = Math.floor(diff / 3600)
+      const diffMinutes = Math.floor((diff % 3600) / 60)
+      const diffSeconds = Math.floor(diff % 60)
+
+      const pad = (num: number) => num.toString().padStart(2, '0')
+      const timestamp = `${pad(diffHours)}:${pad(diffMinutes)}:${pad(diffSeconds)}`
+
+      commentLines.push(
+        `It seems the game starts at around ${timestamp} in the Twitch VOD. Check the video description for the link!`,
+      )
+    } catch (error) {
+      console.error('Failed to process video:', error)
+
+      commentLines.push(
+        'Check out the video description to see the Twitch VOD!',
+      )
+    }
+
+    console.info('Posting comment:', commentLines)
+
+    if (config.env === 'production') {
+      await youtube.addComment(
+        config.youtube.commenter.channelId,
+        videoId,
+        commentLines.join('\n'),
+      )
+
+      console.info('Comment posted.')
+    } else {
+      console.info('Skipped comment, not in production mode.')
+    }
   }
 
   videoProcessingDetails.update(videoId, {

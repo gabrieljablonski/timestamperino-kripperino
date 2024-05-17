@@ -1,4 +1,5 @@
 import qs from 'querystring'
+import ytdlp from 'youtube-dl-exec'
 
 interface ApiResponse<T> {
   kind: string
@@ -66,6 +67,12 @@ interface RequestArgs {
   body?: unknown
   method: 'GET' | 'POST'
   authorization?: string
+}
+
+interface DownloadVideoOptions {
+  from?: number
+  to?: number
+  format?: string
 }
 
 interface YouTubeOptions {
@@ -176,6 +183,19 @@ export default class YouTube {
       body: comment,
       authorization: `Bearer ${this.commenterAccessToken}`,
       method: 'POST',
+    })
+  }
+
+  async downloadVideo(
+    videoId: string,
+    { from = 0, to = -1, format = '247' }: DownloadVideoOptions,
+  ) {
+    return ytdlp(`https://www.youtube.com/watch?v=${videoId}`, {
+      dumpJson: true,
+      format,
+      downloadSections: `*${from}-${to ? to : 'inf'}`,
+      output: '%(id)s.%(ext)s',
+      verbose: true,
     })
   }
 }

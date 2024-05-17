@@ -1,4 +1,5 @@
 export default {
+  env: process.env.NODE_ENV ?? 'development',
   videoProcessing: {
     filepath: process.env.VIDEO_PROCESSING_FILEPATH ?? '',
   },
