@@ -195,7 +195,6 @@ export default class YouTube {
       format,
       downloadSections: `*${from}-${to ? to : 'inf'}`,
       output: '%(id)s.%(ext)s',
-      verbose: true,
     })
   }
 }

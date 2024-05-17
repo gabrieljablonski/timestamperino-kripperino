@@ -70,6 +70,7 @@ async function run(tries = 0) {
     ]
     try {
       console.info('Downloading YT video')
+
       const { filename } = await youtube.downloadVideo('1VgPVeM1JcA', {
         from: 30,
         to: 180,
