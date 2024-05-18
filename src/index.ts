@@ -85,7 +85,7 @@ async function run(tries = 0) {
       const imagesPath = 'images/'
       await ocr.videoToImages(filepath, {
         outputPath: imagesPath,
-        crop: { x: 63, y: 697, w: 56, h: 16 },
+        crop: { x: 63, y: 697, w: 65, h: 16 },
       })
 
       const files = listFilesInDirectory(imagesPath)
