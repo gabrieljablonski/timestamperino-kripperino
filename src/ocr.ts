@@ -29,11 +29,11 @@ export default class OCR {
     })
   }
 
-  async imageToText(filepath: string) {
+  async imageToText(filepath: string, psm = 7) {
     return tesseract.recognize(filepath, {
       lang: 'eng',
       oem: 3,
-      psm: 7,
+      psm,
     })
   }
 }

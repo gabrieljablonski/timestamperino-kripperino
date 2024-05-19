@@ -85,18 +85,22 @@ async function run(tries = 0) {
       const imagesPath = 'images/'
       await ocr.videoToImages(filepath, {
         outputPath: imagesPath,
-        crop: { x: 63, y: 697, w: 65, h: 16 },
+        crop: { x: 63, y: 693, w: 130, h: 20 },
       })
 
       const files = listFilesInDirectory(imagesPath)
       files.sort()
 
-      console.info('Checking images for timestamp')
-
       let time: [number, number] | null = null
       for (const file of files) {
-        const text = await ocr.imageToText(path.join(imagesPath, file))
-        const match = text.trim().match(/(\d\d?):(\d\d) ([AP]M)/)
+        let text = await ocr.imageToText(path.join(imagesPath, file), 7)
+        console.log(file, text)
+        let match = text.trim().match(/(\d\d?):(\d\d) ?([AP]M)/)
+        if (!match) {
+          text = await ocr.imageToText(path.join(imagesPath, file), 13)
+          match = text.trim().match(/(\d\d?):(\d\d) ?([AP]M)/)
+        }
+        console.log(file, text)
         if (match) {
           const offset = match[3] === 'PM' ? 12 : 0
           time = [Number(match[1]) + offset, Number(match[2])]
