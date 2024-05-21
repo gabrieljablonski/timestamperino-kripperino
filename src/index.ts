@@ -125,12 +125,32 @@ async function run(tries = 0) {
         diff += 24 * 60 * 60
       }
 
+      const vodDurationMatch = twitchVod.duration.match(
+        /(?:(\d\d?)h)?(?:(\d\d?)m)?(?:(\d\d?)s)/,
+      )
+
+      if (!vodDurationMatch) {
+        throw new Error('failed to parse VOD duration')
+      }
+
+      const vodDurationHours = Number(vodDurationMatch[1])
+      const vodDurationMinutes = Number(vodDurationMatch[2])
+      const vodDurationSeconds = Number(vodDurationMatch[3])
+      const vodDuration =
+        vodDurationHours * 3600 + vodDurationMinutes * 60 + vodDurationSeconds
+
       const diffHours = Math.floor(diff / 3600)
       const diffMinutes = Math.floor((diff % 3600) / 60)
       const diffSeconds = Math.floor(diff % 60)
 
       const pad = (num: number) => num.toString().padStart(2, '0')
       const timestamp = `${pad(diffHours)}:${pad(diffMinutes)}:${pad(diffSeconds)}`
+
+      if (diff > vodDuration) {
+        throw new Error(
+          `detected time is after VOD duration (${timestamp} > ${twitchVod.duration})`,
+        )
+      }
 
       commentLines.push(
         `It seems the game starts at around ${timestamp} in the Twitch VOD. Check the video description for the link!`,
