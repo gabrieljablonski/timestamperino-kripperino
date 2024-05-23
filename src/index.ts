@@ -105,6 +105,16 @@ async function run(tries = 0) {
           const offset = match[3] === 'PM' ? 12 : 0
           time = [Number(match[1]) + offset, Number(match[2])]
 
+          if (time[0] === 12 && match[3] === 'AM') {
+            // NOTE: Hearthstone clock uses 12:XX AM for midnight
+            time[0] = 0
+          }
+
+          if (time[0] === 24) {
+            // NOTE: Hearthstone clock uses 12:XX PM for noon
+            time[0] = 12
+          }
+
           console.info(`Found timestamp: ${text.trim()} in ${file}`)
           break
         }
