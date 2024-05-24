@@ -46,8 +46,8 @@ async function run(tries = 0) {
       `Last upload already processed (${videoId}). Retrying in a bit...`,
     )
 
-    // NOTE: Retries up to 5 times every 30s in case the video hasn't been posted yet.
-    setTimeout(() => run(tries + 1), 30 * 1000)
+    // NOTE: Retries up to 5 times every 60s in case the video hasn't been posted yet.
+    setTimeout(() => run(tries + 1), 60 * 1000)
     return
   }
 
