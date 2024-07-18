@@ -26,7 +26,7 @@ const ocr = new OCR()
 const playlistId = config.youtube.uploadsPlaylistId
 
 async function run(tries = 0) {
-  if (tries >= 5) {
+  if (tries >= 15) {
     return
   }
 
@@ -46,7 +46,7 @@ async function run(tries = 0) {
       `Last upload already processed (${videoId}). Retrying in a bit...`,
     )
 
-    // NOTE: Retries up to 5 times every 60s in case the video hasn't been posted yet.
+    // NOTE: Retries up to 15 times every 60s in case the video hasn't been posted yet.
     setTimeout(() => run(tries + 1), 60 * 1000)
     return
   }
