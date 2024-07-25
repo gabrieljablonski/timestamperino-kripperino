@@ -193,13 +193,13 @@ export default class YouTube {
     {
       from = 0,
       to = -1,
-      format = '247',
+      format = 'bestvideo',
       outputPath = 'videos/',
     }: DownloadVideoOptions,
   ) {
     return ytdlp(`https://www.youtube.com/watch?v=${videoId}`, {
       format,
-      downloadSections: `*${from}-${to ? to : 'inf'}`,
+      downloadSections: `*${from}-${to !== -1 ? to : 'inf'}`,
       output: path.join(outputPath, '%(id)s.%(ext)s'),
     })
   }

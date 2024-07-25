@@ -75,7 +75,7 @@ async function run(tries = 0) {
       await youtube.downloadVideo(videoId, {
         from: 30,
         to: 300,
-        format: '247',
+        format: 'bestvideo',
         outputPath: videosPath,
       })
 
