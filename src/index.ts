@@ -189,8 +189,6 @@ async function run(tries = 0) {
     }
   }
 
-  return
-
   videoProcessingDetails.update(videoId, {
     id: videoId,
     title: lastUpload.snippet.title,
