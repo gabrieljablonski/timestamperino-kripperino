@@ -85,7 +85,8 @@ async function run(tries = 0) {
       const imagesPath = 'images/'
       await ocr.videoToImages(filepath, {
         outputPath: imagesPath,
-        crop: { x: 63, y: 693, w: 130, h: 20 },
+        // NOTE: Crop area for 1920x1080
+        crop: { x: 94, y: 1040, w: 200, h: 30 },
       })
 
       const files = listFilesInDirectory(imagesPath)
@@ -187,6 +188,8 @@ async function run(tries = 0) {
       console.info('Skipped comment, not in production mode.')
     }
   }
+
+  return
 
   videoProcessingDetails.update(videoId, {
     id: videoId,
